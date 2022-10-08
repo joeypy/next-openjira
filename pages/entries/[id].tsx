@@ -61,10 +61,8 @@ const EntryPage: FC<Props> = ({ entry }: Props) => {
   );
 
   const handleOnDelete = async () => {
-    const result = await deleteEntry(entry._id, true);
-    if (!result) {
-      router.push('/');
-    }
+    await deleteEntry(entry._id, true);
+    router.push('/');
   };
 
   return (

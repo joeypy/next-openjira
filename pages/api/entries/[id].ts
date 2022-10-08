@@ -73,7 +73,7 @@ const deleteEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   }
 
   await db.disconnect();
-  res.status(200).json(entryToDelete!);
+  res.status(200).json({ message: `Elemento id: ${id} borrado con éxito` });
 };
 
 const getEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {

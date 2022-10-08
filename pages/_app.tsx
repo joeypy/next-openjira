@@ -9,7 +9,9 @@ import { EntriesProvider } from '../context/entries';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SnackbarProvider maxSnack={3}>
+      {/* @ts-ignore */}
       <EntriesProvider>
+        {/* @ts-ignore */}
         <UIProvider>
           <ThemeProvider theme={darkTheme}>
             <CssBaseline />

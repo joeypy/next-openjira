@@ -13,7 +13,7 @@ const ENTRIES_INITIAL_STATE: EntriesState = {
   entries: [],
 };
 
-export const EntriesProvider: FC = ({ children }: any) => {
+export const EntriesProvider: FC = (props: any) => {
   const [state, dispatch] = useReducer(entriesReducer, ENTRIES_INITIAL_STATE);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -30,7 +30,7 @@ export const EntriesProvider: FC = ({ children }: any) => {
 
   const updateEntry = async (
     { _id, description, status }: Entry,
-    showSnackbar = false
+    showSnackbar: boolean
   ) => {
     try {
       const { data } = await entriesApi.put<Entry>(`/entries/${_id}`, {
@@ -93,7 +93,7 @@ export const EntriesProvider: FC = ({ children }: any) => {
         deleteEntry,
       }}
     >
-      {children}
+      {props.children}
     </EntriesContext.Provider>
   );
 };
