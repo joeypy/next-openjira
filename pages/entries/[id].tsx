@@ -1,4 +1,5 @@
 import React, { useContext, FC, ChangeEvent, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   capitalize,
   Card,
@@ -29,10 +30,11 @@ interface Props {
   entry: Entry;
 }
 const EntryPage: FC<Props> = ({ entry }: Props) => {
-  const { updateEntry } = useContext(EntriesContext);
+  const { updateEntry, deleteEntry } = useContext(EntriesContext);
   const [inputValue, setInputValue] = useState(entry.description);
   const [status, setStatus] = useState<EntryStatus>(entry.status);
   const [touched, setTouched] = useState(false);
+  const router = useRouter();
 
   const handleFieldChanged = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -57,6 +59,13 @@ const EntryPage: FC<Props> = ({ entry }: Props) => {
     () => inputValue.length <= 0 && touched,
     [inputValue, touched]
   );
+
+  const handleOnDelete = async () => {
+    const result = await deleteEntry(entry._id, true);
+    if (!result) {
+      router.push('/');
+    }
+  };
 
   return (
     <Layout title={inputValue.substring(0, 10) + '...'}>
@@ -117,8 +126,9 @@ const EntryPage: FC<Props> = ({ entry }: Props) => {
           position: 'fixed',
           bottom: 30,
           right: 30,
-          background: 'error.dark',
+          background: 'red',
         }}
+        onClick={handleOnDelete}
       >
         <DeleteOutlineIcon />
       </IconButton>

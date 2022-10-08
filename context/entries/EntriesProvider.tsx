@@ -54,6 +54,27 @@ export const EntriesProvider: FC = ({ children }: any) => {
     }
   };
 
+  const deleteEntry = async (_id: string, showSnackbar = false) => {
+    try {
+      const { data } = await entriesApi.delete<Entry>(`/entries/${_id}`);
+      if (!data) return null;
+      dispatch({ type: '[Entry] - Delete-Entry', payload: _id });
+
+      if (showSnackbar) {
+        enqueueSnackbar('Entrada Eliminada correctamente', {
+          variant: 'success',
+          autoHideDuration: 1500,
+          anchorOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+          },
+        });
+      }
+    } catch (error) {
+      console.error({ error });
+    }
+  };
+
   const refreshEntries = async () => {
     const { data } = await entriesApi.get<Entry[]>('/entries');
     dispatch({ type: '[Entry] - Refresh-Data', payload: data });
@@ -69,6 +90,7 @@ export const EntriesProvider: FC = ({ children }: any) => {
         ...state,
         addNewEntry,
         updateEntry,
+        deleteEntry,
       }}
     >
       {children}

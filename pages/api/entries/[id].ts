@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import mongoose from 'mongoose';
 import { db } from '../../../database';
-import { connect } from '../../../database/db';
 import { Entry, IEntry } from '../../../models';
 
 type Data = { message: string } | IEntry;
@@ -20,6 +19,8 @@ export default function handler(
       return getEntry(req, res);
     case 'PUT':
       return updateEntry(req, res);
+    case 'DELETE':
+      return deleteEntry(req, res);
     default:
       return res.status(400).json({ message: 'Método no permitido' });
   }
@@ -56,6 +57,23 @@ const updateEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     await db.disconnect();
     res.status(400).json({ message: error.errors.status.message || error });
   }
+};
+
+const deleteEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+  const { id } = req.query;
+
+  await db.connect();
+  const entryToDelete = await Entry.deleteOne({ _id: id });
+
+  if (!entryToDelete) {
+    await db.disconnect();
+    return res
+      .status(400)
+      .json({ message: `No hay entrada con ese el ID: ${id}` });
+  }
+
+  await db.disconnect();
+  res.status(200).json(entryToDelete!);
 };
 
 const getEntry = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
